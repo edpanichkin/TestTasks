@@ -15,4 +15,8 @@ public class MessageUtil {
   public static void workingText() {
     System.out.println("\n....Вычисляю....\n");
   }
+  public static void startMessage() {
+    System.out.println("______________________");
+    System.out.println("Входные параметры");
+  }
 }
