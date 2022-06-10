@@ -1,6 +1,9 @@
 import java.util.Scanner;
 
 public class Main {
+  public final static String SYMBOL = "#";
+  public final static StringBuilder LINE_PATTERN = new StringBuilder();
+
   static class LineFunction {
     double k;
     double b;
@@ -17,6 +20,8 @@ public class Main {
 
     int height = scannerIntInput(sc, MessageUtil.heightTextString());
     int width = scannerIntInput(sc, MessageUtil.widthTextString());
+
+    LINE_PATTERN.append(" ".repeat(width));
     printDiamond(height, width);
   }
 
@@ -35,11 +40,13 @@ public class Main {
 
   private static void printDiamond(int height, int width) {
     MessageUtil.workingText();
-    final StringBuilder preLine = new StringBuilder(width).append(" ".repeat(width));
-    String symbol = "#";
+    if (height == width && height % 2 == 1) {
+      printPerfectDiamond(height, width);
+      return;
+    }
 
     for (int i = 0; i < height; i++) {
-      StringBuilder line = new StringBuilder(preLine);
+      StringBuilder line = new StringBuilder(LINE_PATTERN);
       LineFunction leftFunc = i <= centerPos(height)
               ? findEqFunction(centerPos(width), 0, 0, centerPos(height))
               : findEqFunction(0, centerPos(width), centerPos(height), height);
@@ -47,17 +54,36 @@ public class Main {
               ? findEqFunction(centerPos(width), width, 0, centerPos(height))
               : findEqFunction(width, centerPos(width), centerPos(height), height);
       if (i == 0 || i == height - 1) {
-        line.replace(centerPos(width), centerPos(width) + 1, symbol);
+        line.replace(centerPos(width), centerPos(width) + 1, SYMBOL);
       } else {
-        int index = getXFromY(i, leftFunc);
-        line.replace(index, index + 1, symbol);
-        index = getXFromY(i, rightFunc);
+        int index = (int) getXFromY(i, leftFunc);
+        line.replace(index, index + 1, SYMBOL);
+        index = (int) getXFromY(i, rightFunc);
         if (index == width) {
           --index;
         }
-        line.replace(index, index + 1, symbol);
+        line.replace(index, index + 1, SYMBOL);
       }
       System.out.println(line);
+    }
+  }
+
+  private static void printPerfectDiamond(int height, int width) {
+    int delta = 0;
+
+    for (int i = 0; i < height; i++) {
+      StringBuilder line = new StringBuilder(LINE_PATTERN);
+      int index = centerPos(width) + delta;
+      line.replace(index, index + 1, SYMBOL);
+      index = centerPos(width) - delta;
+      line.replace(index, index + 1, SYMBOL);
+      System.out.println(line);
+
+      if (i < centerPos(height)) {
+        delta++;
+      } else {
+        delta--;
+      }
     }
   }
 
@@ -71,7 +97,7 @@ public class Main {
     return pos % 2 == 0 ? pos / 2 - 1 : pos / 2;
   }
 
-  private static int getXFromY(int y, LineFunction func) {
-    return (int) ((y - func.b) / func.k);
+  private static double getXFromY(int y, LineFunction func) {
+    return ((y - func.b) / func.k);
   }
 }
