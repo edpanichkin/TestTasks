@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+
+  postgres:
+    build:
+      context: ./docker/images
+      dockerfile: Dockerfile
+    container_name: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: "user"
+      POSTGRES_USER: "user"
+      POSTGRES_DB: "sodch"
